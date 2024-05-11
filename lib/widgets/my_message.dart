@@ -18,12 +18,27 @@ class MyMessage extends StatelessWidget {
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
                   bottomRight: Radius.circular(12))),
-          child: Text(
-            message.body,
-            style: TextStyle(
-              color: Color.fromARGB(255, 224, 224, 224),
-              fontSize: 24,
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                child: Text(
+                  message.firstName,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.lightGreenAccent),
+                ),
+              ),
+              Text(
+                message.body,
+                style: const TextStyle(
+                  color: Color.fromARGB(255, 224, 224, 224),
+                  fontSize: 24,
+                ),
+              ),
+            ],
           ),
         ),
       ),

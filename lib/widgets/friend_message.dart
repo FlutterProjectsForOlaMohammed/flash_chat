@@ -22,12 +22,26 @@ class FriendMessage extends StatelessWidget {
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
                   bottomLeft: Radius.circular(12))),
-          child: Text(
-            message.body,
-            style: TextStyle(
-              color: kPrimaryColor,
-              fontSize: 24,
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                child: Text(
+                  message.firstName,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500, color: Colors.brown[900]),
+                ),
+              ),
+              Text(
+                message.body,
+                style: TextStyle(
+                  color: kPrimaryColor,
+                  fontSize: 24,
+                ),
+              ),
+            ],
           ),
         ),
       ),
