@@ -1,5 +1,7 @@
 import 'package:flash_chat/contants.dart';
 import 'package:flash_chat/cubit/RegisterAuthentication/register_authentication_cubit.dart';
+import 'package:flash_chat/models/user_data.dart';
+import 'package:flash_chat/views/chat_view.dart';
 import 'package:flash_chat/widgets/custom_elvated_button.dart';
 import 'package:flash_chat/widgets/custom_text_field.dart';
 import 'package:flutter/cupertino.dart';
@@ -149,11 +151,26 @@ class _RegisterViewState extends State<RegisterView> {
                                 if (password == confirmedPassword) {
                                   await BlocProvider.of<
                                           RegisterAuthenticationCubit>(context)
-                                      .register(UserData(
-                                          firstName: firstName,
-                                          lastName: lastName,
-                                          email: email,
-                                          password: password));
+                                      .register(
+                                          user: UserData(
+                                              firstName: firstName,
+                                              lastName: lastName,
+                                              email: email),
+                                          password: password);
+                                  Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                      builder: (context) {
+                                        return ChatView(
+                                          user: UserData(
+                                            firstName: firstName,
+                                            lastName: lastName,
+                                            email: email,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
                                 } else {
                                   await toastMessage(
                                       msg:

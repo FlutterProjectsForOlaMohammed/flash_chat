@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/contants.dart';
+import 'package:flash_chat/models/user_data.dart';
 import 'package:meta/meta.dart';
 
 part 'register_authentication_state.dart';
@@ -8,13 +10,18 @@ part 'register_authentication_state.dart';
 class RegisterAuthenticationCubit extends Cubit<RegisterAuthenticationState> {
   RegisterAuthenticationCubit() : super(AuthenticationRegisterInitial());
 
-  register(UserData userData) async {
+  register({required UserData user, required String password}) async {
     try {
       emit(AuthenticationRegisterLoading());
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password,
+        email: user.email,
+        password: password,
       );
+      await FirebaseFirestore.instance.collection("Users").add({
+        'first name': user.firstName,
+        'last name': user.lastName,
+        'email': user.email,
+      });
       emit(AuthenticationRegisterSuccess());
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -26,14 +33,4 @@ class RegisterAuthenticationCubit extends Cubit<RegisterAuthenticationState> {
       await toastMessage(msg: e.toString());
     }
   }
-}
-
-class UserData {
-  final String firstName, lastName, email, password;
-
-  UserData(
-      {required this.firstName,
-      required this.lastName,
-      required this.email,
-      required this.password});
 }

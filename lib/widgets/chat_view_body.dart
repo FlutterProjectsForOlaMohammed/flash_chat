@@ -1,20 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flash_chat/contants.dart';
+import 'package:flash_chat/models/chat_details_model.dart';
+import 'package:flash_chat/models/user_data.dart';
 import 'package:flash_chat/widgets/error_message_from_db.dart';
 import 'package:flash_chat/widgets/friend_message.dart';
+import 'package:flash_chat/widgets/input_message-text_field.dart';
 import 'package:flash_chat/widgets/loading_indicator.dart';
 import 'package:flash_chat/widgets/my_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ChatViewBody extends StatelessWidget {
+class ChatViewBody extends StatefulWidget {
   const ChatViewBody({
     super.key,
-    required this.firestore,
+    required this.user,
   });
 
-  final CollectionReference<Map<String, dynamic>> firestore;
+  final UserData user;
+
+  @override
+  State<ChatViewBody> createState() => _ChatViewBodyState();
+}
+
+class _ChatViewBodyState extends State<ChatViewBody> {
+  CollectionReference<Map<String, dynamic>> firestore =
+      FirebaseFirestore.instance.collection("messages");
+  ScrollController listviewController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -49,16 +61,30 @@ class ChatViewBody extends StatelessWidget {
             ),
           ),
           StreamBuilder(
-            stream: firestore.snapshots(),
+            stream: firestore.orderBy('date', descending: true).snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return const ErrorMessageFromDB();
               } else if (snapshot.hasData) {
-                return const Expanded(
+                ChatMessageModel.allMessagesFromFB(snapshot.data!.docs);
+                List<ChatMessageModel> messages = ChatMessageModel.allMessages;
+                goToLastMessageAnimation();
+                return Expanded(
                     child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Column(
-                    children: [FriendMessage(), MyMessage()],
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: ListView.builder(
+                    controller: listviewController,
+                    physics: BouncingScrollPhysics(),
+                    reverse: true,
+                    itemCount: messages.length,
+                    itemBuilder: (context, index) {
+                      if (messages[index].email == widget.user.email) {
+                        return MyMessage(message: messages[index]);
+                      } else {
+                        return FriendMessage(message: messages[index]);
+                      }
+                    },
                   ),
                 ));
               } else {
@@ -66,8 +92,19 @@ class ChatViewBody extends StatelessWidget {
               }
             },
           ),
+          InputMessageTextField(
+            user: widget.user,
+          ),
         ],
       ),
     );
+  }
+
+  void goToLastMessageAnimation() {
+    if (listviewController.hasClients) {
+      listviewController.jumpTo(
+        listviewController.position.minScrollExtent,
+      );
+    }
   }
 }

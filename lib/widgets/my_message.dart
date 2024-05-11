@@ -1,8 +1,9 @@
+import 'package:flash_chat/models/chat_details_model.dart';
 import 'package:flutter/material.dart';
 
 class MyMessage extends StatelessWidget {
-  const MyMessage({super.key});
-
+  const MyMessage({super.key, required this.message});
+  final ChatMessageModel message;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -17,8 +18,8 @@ class MyMessage extends StatelessWidget {
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
                   bottomRight: Radius.circular(12))),
-          child: const Text(
-            "Ola Mohammed Fathy Ahmed",
+          child: Text(
+            message.body,
             style: TextStyle(
               color: Color.fromARGB(255, 224, 224, 224),
               fontSize: 24,
