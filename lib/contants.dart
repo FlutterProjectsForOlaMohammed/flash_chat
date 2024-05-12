@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flash_chat/models/user_data.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -38,4 +40,20 @@ Future<void> toastMessage({required String msg}) async {
       backgroundColor: Colors.grey[400],
       textColor: kPrimaryColor,
       fontSize: 16.0);
+}
+
+Future<UserData> getSenderData({required String email}) async {
+  CollectionReference getUserData =
+      FirebaseFirestore.instance.collection("Users");
+  QuerySnapshot query =
+      await getUserData.where('email', isEqualTo: email).get();
+  late UserData user;
+  for (int i = 0; i < query.docs.length; i++) {
+    user = UserData(
+      firstName: query.docs.first['first name'],
+      lastName: query.docs.first['last name'],
+      email: query.docs.first['email'],
+    );
+  }
+  return user;
 }

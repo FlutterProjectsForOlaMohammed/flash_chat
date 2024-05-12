@@ -25,7 +25,7 @@ class MyMessage extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 child: Text(
-                  message.firstName,
+                  "${message.firstName} ${message.lastName}",
                   style: const TextStyle(
                       fontWeight: FontWeight.w500,
                       color: Colors.lightGreenAccent),

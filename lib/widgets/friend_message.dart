@@ -29,14 +29,14 @@ class FriendMessage extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 child: Text(
-                  message.firstName,
+                  "${message.firstName} ${message.lastName}",
                   style: TextStyle(
                       fontWeight: FontWeight.w500, color: Colors.brown[900]),
                 ),
               ),
               Text(
                 message.body,
-                style: TextStyle(
+                style: const TextStyle(
                   color: kPrimaryColor,
                   fontSize: 24,
                 ),

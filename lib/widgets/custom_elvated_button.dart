@@ -26,6 +26,7 @@ class CustomElvatedButton extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   color: Colors.white),
             )
+          // ignore: prefer_const_constructors
           : CupertinoActivityIndicator(
               color: Colors.white,
             ),

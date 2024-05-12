@@ -1,15 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flash_chat/contants.dart';
 import 'package:flash_chat/models/chat_details_model.dart';
 import 'package:flash_chat/models/user_data.dart';
 import 'package:flash_chat/widgets/error_message_from_db.dart';
-import 'package:flash_chat/widgets/friend_message.dart';
+import 'package:flash_chat/widgets/flash_chat_logo_app_bar.dart';
 import 'package:flash_chat/widgets/input_message-text_field.dart';
 import 'package:flash_chat/widgets/loading_indicator.dart';
-import 'package:flash_chat/widgets/my_message.dart';
+import 'package:flash_chat/widgets/messages_list_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class ChatViewBody extends StatefulWidget {
   const ChatViewBody({
@@ -33,33 +30,7 @@ class _ChatViewBodyState extends State<ChatViewBody> {
     return SafeArea(
       child: Column(
         children: [
-          Card(
-            elevation: 25,
-            color: Colors.transparent,
-            child: Row(
-              children: [
-                const SizedBox(
-                  width: 15,
-                ),
-                Hero(
-                  tag: "splashPic",
-                  child: SvgPicture.asset(
-                    "assets/flash (1).svg",
-                    height: 35,
-                    width: 35,
-                  ),
-                ),
-                Text(
-                  "Flash Chat",
-                  style: GoogleFonts.pacifico(
-                    color: kPrimaryColor,
-                    fontSize: 24,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          const FlashChatLogoAppBar(),
           StreamBuilder(
             stream: firestore.orderBy('date', descending: true).snapshots(),
             builder: (context, snapshot) {
@@ -70,23 +41,15 @@ class _ChatViewBodyState extends State<ChatViewBody> {
                 List<ChatMessageModel> messages = ChatMessageModel.allMessages;
                 goToLastMessageAnimation();
                 return Expanded(
-                    child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: ListView.builder(
-                    controller: listviewController,
-                    physics: BouncingScrollPhysics(),
-                    reverse: true,
-                    itemCount: messages.length,
-                    itemBuilder: (context, index) {
-                      if (messages[index].email == widget.user.email) {
-                        return MyMessage(message: messages[index]);
-                      } else {
-                        return FriendMessage(message: messages[index]);
-                      }
-                    },
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: MessagesListView(
+                        listviewController: listviewController,
+                        messages: messages,
+                        widget: widget),
                   ),
-                ));
+                );
               } else {
                 return const LoadingIndicator();
               }

@@ -1,6 +1,7 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/contants.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -15,10 +16,10 @@ class LoginAuthenticationCubit extends Cubit<AuthenticationState> {
   }) async {
     try {
       emit(AuthenticationLoginLoading());
-      final credential = await FirebaseAuth.instance
+      await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
-      emit(AuthenticationLoginSuccess(user: credential));
+      emit(AuthenticationLoginSuccess());
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         emit(
